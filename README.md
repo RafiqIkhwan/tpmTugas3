@@ -1,6 +1,6 @@
 # tugas3
 
-A new Flutter project.
+Tugas 3 dari mata kuliah Teknologi dan Pemrograman Mobile IF-B
 
 ## Getting Started
 
