@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 
 class TrackingPage extends StatefulWidget {
+  const TrackingPage({super.key});
+
   @override
   _TrackingPageState createState() => _TrackingPageState();
 }

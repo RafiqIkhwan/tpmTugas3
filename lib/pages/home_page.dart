@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:tugas3/pages/our_team.dart';
 // import 'package:tugas3/pages/members_page.dart';
-// import 'package:tugas3/pages/help_page.dart';
+import 'package:tugas3/pages/help_page.dart';
 // import 'package:tugas3/main.dart';
 
 import 'package:tugas3/pages/stopwatch_page.dart';
@@ -10,6 +11,8 @@ import 'package:tugas3/pages/konversi_waktu_page.dart';
 import 'package:tugas3/pages/situs_rekomendasi_page.dart';
 
 class HomePage extends StatefulWidget {
+  const HomePage({super.key});
+
   @override
   _HomePageState createState() => _HomePageState();
 }
@@ -20,7 +23,7 @@ class _HomePageState extends State<HomePage> {
   // Daftar halaman dalam Bottom Navigation Bar
   final List<Widget> _pages = [
     MainMenuPage(),   // Halaman Utama
-    MemberPage(),     // Daftar Anggota
+    OurTeamPage(),     // Daftar Anggota
     HelpPage(),       // Bantuan & Logout
   ];
 
@@ -52,6 +55,8 @@ class _HomePageState extends State<HomePage> {
 
 // Halaman Utama (Berisi daftar fitur)
 class MainMenuPage extends StatelessWidget {
+  const MainMenuPage({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -118,38 +123,3 @@ class MainMenuPage extends StatelessWidget {
   }
 }
 
-// Halaman Daftar Anggota
-class MemberPage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text('Daftar Anggota')),
-      body: Center(child: Text('Daftar anggota kelompokmu di sini')),
-    );
-  }
-}
-
-// Halaman Bantuan & Logout
-class HelpPage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text('Bantuan')),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text('Cara penggunaan aplikasi ini...'),
-            SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.pushReplacementNamed(context, '/');
-              },
-              child: Text('Logout'),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 class KonversiWaktuPage extends StatefulWidget {
+  const KonversiWaktuPage({super.key});
+
   @override
   _KonversiWaktuPageState createState() => _KonversiWaktuPageState();
 }

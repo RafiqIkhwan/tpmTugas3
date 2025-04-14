@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 class JenisBilanganPage extends StatefulWidget {
+  const JenisBilanganPage({super.key});
+
   @override
   _JenisBilanganPageState createState() => _JenisBilanganPageState();
 }

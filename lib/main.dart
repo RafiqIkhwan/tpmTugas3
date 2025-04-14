@@ -4,24 +4,28 @@ import 'package:tugas3/pages/stopwatch_page.dart';
 import 'package:tugas3/pages/jenis_bilangan_page.dart';
 import 'package:tugas3/pages/tracking_page.dart';
 import 'package:tugas3/pages/situs_rekomendasi_page.dart';
-
+import 'package:tugas3/pages/login_page.dart';
 void main() {
   runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Tugas 3',
       theme: ThemeData(primarySwatch: Colors.blue),
-      home: MainPage(),
+      home: LoginPage(),
     );
   }
 }
 
 class MainPage extends StatelessWidget {
+  const MainPage({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -69,6 +73,8 @@ class MainPage extends StatelessWidget {
 
 // Contoh penggunaan FutureBuilder untuk operasi asinkron
 class ExamplePage extends StatelessWidget {
+  const ExamplePage({super.key});
+
   Future<String> fetchData() async {
     // Simulasi operasi berat
     await Future.delayed(Duration(seconds: 2));
