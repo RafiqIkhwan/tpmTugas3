@@ -70,7 +70,14 @@ class _TrackingPageState extends State<TrackingPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Tracking LBS')),
+      appBar: AppBar(
+        title: Text('Tracking LBS'),
+        leading: BackButton(
+          onPressed: () {
+            Navigator.pop(context); // Kembali ke halaman sebelumnya
+          },
+        ),
+      ),
       body: Center(
         child: Padding(
           padding: const EdgeInsets.all(16.0),
@@ -82,10 +89,19 @@ class _TrackingPageState extends State<TrackingPage> {
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
               SizedBox(height: 10),
-              Text(
-                _location,
-                textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 16),
+              Card(
+                elevation: 5,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Text(
+                    _location,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontSize: 16),
+                  ),
+                ),
               ),
               SizedBox(height: 20),
               ElevatedButton(

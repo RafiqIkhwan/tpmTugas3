@@ -21,13 +21,15 @@ class _LoginPageState extends State<LoginPage> {
       // Berpindah ke halaman utama jika login berhasil
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => HomePage()), // Pastikan MainMenu ada di main.dart
+        MaterialPageRoute(
+          builder: (context) => HomePage(),
+        ), // Pastikan MainMenu ada di main.dart
       );
     } else {
       // Menampilkan pesan jika login gagal
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Username atau password salah!")),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text("Username atau password salah!")));
     }
   }
 
