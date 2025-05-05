@@ -1,44 +1,45 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_map/flutter_map.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:latlong2/latlong.dart';
 
 class TrackingPage extends StatefulWidget {
   const TrackingPage({super.key});
 
   @override
-  _TrackingPageState createState() => _TrackingPageState();
+  State<TrackingPage> createState() => _TrackingPageState();
 }
 
 class _TrackingPageState extends State<TrackingPage> {
-  String _location = 'Lokasi belum tersedia';
-  LatLng _currentPosition = LatLng(-7.7956, 110.3695); // Default: Yogyakarta
-
-  @override
-  void initState() {
-    super.initState();
-    _getCurrentLocation();
-  }
+  String _locationMessage = "Lokasi belum didapatkan";
+  double? _latitude;
+  double? _longitude;
+  bool _isLoading = false;
 
   Future<void> _getCurrentLocation() async {
+    setState(() {
+      _isLoading = true;
+    });
+
     bool serviceEnabled;
     LocationPermission permission;
 
-    // Cek apakah GPS aktif
     serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
       setState(() {
-        _location = 'GPS tidak aktif. Aktifkan GPS Anda.';
+        _locationMessage = "Layanan lokasi tidak aktif.";
+        _isLoading = false;
       });
       return;
     }
 
-    // Cek izin akses lokasi
     permission = await Geolocator.checkPermission();
     if (permission == LocationPermission.denied) {
       permission = await Geolocator.requestPermission();
       if (permission == LocationPermission.denied) {
         setState(() {
-          _location =
-              'Izin lokasi ditolak. Menggunakan lokasi default: Yogyakarta.';
+          _locationMessage = "Izin lokasi ditolak.";
+          _isLoading = false;
         });
         return;
       }
@@ -46,49 +47,55 @@ class _TrackingPageState extends State<TrackingPage> {
 
     if (permission == LocationPermission.deniedForever) {
       setState(() {
-        _location =
-            'Izin lokasi ditolak secara permanen. Menggunakan lokasi default: Yogyakarta.';
+        _locationMessage = "Izin lokasi ditolak permanen.";
+        _isLoading = false;
       });
       return;
     }
 
-    // Dapatkan lokasi pengguna
     try {
-      Position position = await Geolocator.getCurrentPosition();
+      Position position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high,
+      );
+
       setState(() {
-        _currentPosition = LatLng(position.latitude, position.longitude);
-        _location =
-            'Latitude: ${position.latitude}, Longitude: ${position.longitude}';
+        _latitude = position.latitude;
+        _longitude = position.longitude;
+        _locationMessage =
+            'Latitude: ${position.latitude.toStringAsFixed(8)}\nLongitude: ${position.longitude.toStringAsFixed(8)}';
+        _isLoading = false;
       });
     } catch (e) {
       setState(() {
-        _location = 'Gagal mendapatkan lokasi: $e';
+        _locationMessage = "Gagal mendapatkan lokasi: $e";
+        _isLoading = false;
       });
     }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _getCurrentLocation();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Tracking LBS'),
-        leading: BackButton(
-          onPressed: () {
-            Navigator.pop(context); // Kembali ke halaman sebelumnya
-          },
-        ),
+        title: const Text('Tracking LBS'),
+        leading: BackButton(onPressed: () => Navigator.pop(context)),
       ),
-      body: Center(
+      body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text(
+              const Text(
                 'Lokasi Anda:',
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
-              SizedBox(height: 10),
+              const SizedBox(height: 10),
               Card(
                 elevation: 5,
                 shape: RoundedRectangleBorder(
@@ -97,29 +104,55 @@ class _TrackingPageState extends State<TrackingPage> {
                 child: Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: Text(
-                    _location,
+                    _locationMessage,
                     textAlign: TextAlign.center,
-                    style: TextStyle(fontSize: 16),
+                    style: const TextStyle(fontSize: 16),
                   ),
                 ),
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               ElevatedButton(
                 onPressed: _getCurrentLocation,
-                child: Text('Perbarui Lokasi'),
+                child: const Text('Perbarui Lokasi'),
               ),
+              const SizedBox(height: 20),
+              if (_isLoading)
+                const CircularProgressIndicator()
+              else if (_latitude != null && _longitude != null)
+                SizedBox(
+                  height: 300,
+                  child: FlutterMap(
+                    options: MapOptions(
+                      initialCenter: LatLng(_latitude!, _longitude!),
+                      initialZoom: 16.0,
+                    ),
+                    children: [
+                      TileLayer(
+                        urlTemplate:
+                            'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+                        subdomains: const ['a', 'b', 'c'],
+                      ),
+                      MarkerLayer(
+                        markers: [
+                          Marker(
+                            point: LatLng(_latitude!, _longitude!),
+                            width: 40,
+                            height: 40,
+                            child: const Icon(
+                              Icons.location_on,
+                              color: Colors.red,
+                              size: 40,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
             ],
           ),
         ),
       ),
     );
   }
-}
-
-// Tambahkan LatLng class jika belum ada
-class LatLng {
-  final double latitude;
-  final double longitude;
-
-  LatLng(this.latitude, this.longitude);
 }
